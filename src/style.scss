@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @font-face {
   font-family: "Meamury";
   src: url("/src/18928.ttf");
@@ -6,8 +7,10 @@ html,
 body {
   margin: 0;
   padding: 0;
+  font-family: "Roboto", sans-serif;
 }
 .app {
+  position: relative;
   perspective: 500px;
   background-color: #ddde;
   position: fixed;
@@ -22,25 +25,30 @@ body {
   box-sizing: border-box;
   display: grid;
   grid-template-rows: 20px auto 20px;
+
   @media (max-width: 1042px) {
     width: 60vmin;
     height: 60vmin;
   }
   &.colorLight {
-    color: #ddd;
+    // color: #ddd;
   }
   &.colorDark {
-    color: #222;
+    // color: #222;
   }
   & > div {
     overflow: auto;
   }
 }
 .green {
-  background-color: #222e;
+  background: radial-gradient(#eee7 10%, #eee 80%);
+  color: black;
+  text-shadow: 0 0 5px #888;
 }
 .blue {
-  background-color: #ddde;
+  background: radial-gradient(#0007 10%, #222 80%);
+  color: white;
+  text-shadow: 0 0 5px #888;
 }
 
 .wrap {
@@ -115,6 +123,7 @@ button {
 img {
   width: 100%;
   object-fit: cover;
+  background-color: #eee;
 }
 .img {
   position: relative;
@@ -180,4 +189,25 @@ img {
   left: 0;
   right: 0;
   background: linear-gradient(to right, #0000, #0008);
+}
+.toggle {
+  display: grid;
+  overflow: auto;
+  & > button {
+    padding-top: 1rem;
+    font-size: x-large;
+    // background: linear-gradient(to bottom, #222, #eee0);
+    border-bottom: 1px solid #aaa;
+  }
+
+  & > p {
+    position: relative;
+    top: 0;
+    transition: top 1s, opacity 1s;
+    z-index: -1;
+    &.hidden {
+      top: 100%;
+      opacity: 0;
+    }
+  }
 }

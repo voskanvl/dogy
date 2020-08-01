@@ -120,6 +120,14 @@ let opts = Object.defineProperty({}, "passive", {
   },
 });
 
+const toggleDescription = () => {
+  const toggle = document.querySelector(".toggle>button");
+  const pToggle = document.querySelector(".toggle>p");
+  toggle.addEventListener("click", () => {
+    pToggle.classList.toggle("hidden");
+  });
+};
+
 addEventListener("wheel", handlerScroll("wheel"), opts);
 // addEventListener("scroll", handlerScroll("scroll"), opts);
 // addEventListener("touchmove", handlerScroll("touchmove"), opts);
@@ -127,24 +135,28 @@ const handlerScrollComplete = e => {
   console.log("handlerScrollComplete");
   if (wheel > 0) {
     count.dec();
-    app.classList.remove("green", "colorLight");
-    app.classList.add("blue", "colorDark");
+
     app.classList.add("hiddenUp");
     setTimeout(() => {
+      app.classList.remove("green", "colorLight");
+      app.classList.add("blue", "colorDark");
       appDiv.innerHTML = texts[count.value];
       refreshImg("dark");
       thumbnailsRefresh(count.value);
+      toggleDescription();
       app.classList.remove("hiddenUp");
     }, delay);
   } else {
     count.inc();
-    app.classList.remove("blue", "colorDark");
-    app.classList.add("green", "colorLight");
+
     app.classList.add("hiddenDown");
     setTimeout(() => {
+      app.classList.remove("blue", "colorDark");
+      app.classList.add("green", "colorLight");
       appDiv.innerHTML = texts[count.value];
       refreshImg("light");
       thumbnailsRefresh(count.value);
+      toggleDescription();
       app.classList.remove("hiddenDown");
     }, delay);
   }
@@ -166,5 +178,6 @@ btns.forEach(btn => {
 //------  rotate .img  ---------
 
 refreshImg("dark");
+toggleDescription();
 
-//------ middle ----------------
+//------ toggle -------/--------
