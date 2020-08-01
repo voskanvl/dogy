@@ -5,23 +5,25 @@ const threshold = 50;
 const delay = 600;
 let wheel = -1;
 
+const chCountValue = new Event("chCountValue");
+
 let count = {
   value: 1,
   inc() {
-    console.log("inc", this.value);
     if (this.value + 1 > texts.length - 1) {
       this.value = 0;
     } else {
       this.value++;
     }
+    dispatchEvent(chCountValue);
   },
   dec() {
-    console.log("dec", this.value);
     if (this.value - 1 < 0) {
       this.value = texts.length - 1;
     } else {
       this.value--;
     }
+    dispatchEvent(chCountValue);
   },
 };
 
@@ -33,7 +35,8 @@ const getImg = () => {
   return document.querySelector(".img");
 };
 
-const moveFlag = el => {
+const moveFlag = () => {
+  const el = thumbs[count.value];
   const flag = document.querySelector(".flag");
   const top = el.getBoundingClientRect().top;
   const height = el.getBoundingClientRect().height;
@@ -41,6 +44,8 @@ const moveFlag = el => {
   flag.style.top = moveFlagTo + "px";
   console.log("x", top, height);
 };
+
+addEventListener("chCountValue", moveFlag);
 
 const thumbnails = data.reduce((ac, e, i) => {
   return i === count.value
@@ -54,15 +59,16 @@ const thumbs = document.querySelectorAll(".wrap > .middle > .thumbnail");
 
 const handleThumbs = e => {
   const id = e.target.closest(".thumbnail").dataset.id;
-  moveFlag(e.target);
   if (+id < count.value) {
     wheel = 51;
     count.value = +id + 1;
     handlerScrollComplete(e);
+    moveFlag();
   } else {
     wheel = -51;
     count.value = +id - 1;
     handlerScrollComplete(e);
+    moveFlag();
   }
 };
 
