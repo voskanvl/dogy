@@ -33,6 +33,15 @@ const getImg = () => {
   return document.querySelector(".img");
 };
 
+const moveFlag = el => {
+  const flag = document.querySelector(".flag");
+  const top = el.getBoundingClientRect().top;
+  const height = el.getBoundingClientRect().height;
+  const moveFlagTo = top + height / 3;
+  flag.style.top = moveFlagTo + "px";
+  console.log("x", top, height);
+};
+
 const thumbnails = data.reduce((ac, e, i) => {
   return i === count.value
     ? ac +
@@ -40,11 +49,12 @@ const thumbnails = data.reduce((ac, e, i) => {
     : ac + `<div class="thumbnail" data-id=${i}><img src="${e.imgUrl}"/></div>`;
 }, "");
 const middle = document.querySelector(".wrap > .middle");
-middle.innerHTML = thumbnails;
+middle.innerHTML = `<div class="flag">◀︎</div>` + thumbnails;
 const thumbs = document.querySelectorAll(".wrap > .middle > .thumbnail");
 
 const handleThumbs = e => {
   const id = e.target.closest(".thumbnail").dataset.id;
+  moveFlag(e.target);
   if (+id < count.value) {
     wheel = 51;
     count.value = +id + 1;
@@ -55,6 +65,7 @@ const handleThumbs = e => {
     handlerScrollComplete(e);
   }
 };
+
 thumbs.forEach(e => {
   e.addEventListener("click", handleThumbs);
 });
@@ -195,5 +206,6 @@ btns.forEach(btn => {
 
 refreshImg("dark");
 toggleDescription();
+moveFlag(thumbs[1]);
 
 //------ toggle -------/--------

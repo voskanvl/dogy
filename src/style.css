@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @font-face {
   font-family: "Meamury";
@@ -113,6 +112,7 @@ body {
 }
 
 .middle {
+  position: relative;
   background-color: #0005;
   height: 100vh;
   display: -webkit-box;
@@ -126,6 +126,18 @@ body {
       -ms-flex-pack: justify;
           justify-content: space-between;
   overflow: auto;
+}
+
+.middle > .flag {
+  position: absolute;
+  font-size: 2vmax;
+  right: -5px;
+  top: 33.33%;
+  color: red;
+  text-shadow: -3px 0 16px red;
+  -webkit-transition: 1s;
+  transition: 1s;
+  z-index: 13;
 }
 
 .middle .thumbnail {
@@ -157,16 +169,6 @@ body {
   position: relative;
   -webkit-filter: brightness(1.2);
           filter: brightness(1.2);
-}
-
-.middle .thumbnail.thumbnail-light::after {
-  content: "◀︎";
-  position: absolute;
-  font-size: 1.5rem;
-  right: -5px;
-  top: 33.33%;
-  color: #eee;
-  text-shadow: -2px 0 10px #222;
 }
 
 .middle .thumbnail.thumbnail-light > img {

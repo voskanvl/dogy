@@ -91,12 +91,23 @@ body {
   }
 }
 .middle {
+  position: relative;
   background-color: #0005;
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: auto;
+  & > .flag {
+    position: absolute;
+    font-size: 2vmax;
+    right: -5px;
+    top: 33.33%;
+    color: red;
+    text-shadow: -3px 0 16px red;
+    transition: 1s;
+    z-index: 13;
+  }
   .thumbnail {
     position: relative;
     flex: 1 1;
@@ -117,15 +128,7 @@ body {
     &.thumbnail-light {
       position: relative;
       filter: brightness(1.2);
-      &::after {
-        content: "◀︎";
-        position: absolute;
-        font-size: 1.5rem;
-        right: -5px;
-        top: 33.33%;
-        color: #eee;
-        text-shadow: -2px 0 10px #222;
-      }
+
       & > img {
         // position: relative;
         // transform: scale(1.2);
