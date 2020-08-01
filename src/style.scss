@@ -93,8 +93,47 @@ body {
 .middle {
   background-color: #0005;
   height: 100vh;
-  display: grid;
-  // place-items: center auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: auto;
+  .thumbnail {
+    position: relative;
+    flex: 1 1;
+    filter: brightness(0.4) blur(1px);
+    transition: 1s;
+    // display: grid;
+    // place-items: center;
+
+    & > img {
+      width: 100%;
+      object-fit: fill;
+      transition: 1s;
+      cursor: pointer;
+    }
+    &:hover {
+      filter: none;
+    }
+    &.thumbnail-light {
+      position: relative;
+      filter: brightness(1.2);
+      &::after {
+        content: "◀︎";
+        position: absolute;
+        font-size: 1.5rem;
+        right: -5px;
+        top: 33.33%;
+        color: #eee;
+        text-shadow: -2px 0 10px #222;
+      }
+      & > img {
+        // position: relative;
+        // transform: scale(1.2);
+        filter: drop-shadow(0 2px 16px black);
+        z-index: 93;
+      }
+    }
+  }
 }
 body {
   & > .hiddenUp {
@@ -111,6 +150,7 @@ button {
   border: none;
   cursor: pointer;
   color: inherit;
+  font-size: 1.5rem;
 
   &.down {
     transform: rotate(180deg);
@@ -151,29 +191,7 @@ img {
     }
   }
 }
-.thumbnail {
-  filter: brightness(0.4);
-  transition: 1s;
-  display: grid;
-  place-items: center;
-  & > img {
-    width: 100%;
-    object-fit: cover;
-    transition: 1s;
-    cursor: pointer;
-  }
-  &:hover {
-    filter: none;
-  }
-}
-.thumbnail-light {
-  filter: brightness(1.2);
-  // box-shadow: 0 2px 16px #444;
-  & > img {
-    transform: scale(1.2);
-    filter: drop-shadow(0 2px 16px black);
-  }
-}
+
 #lay_1 {
   width: 100vmin;
   height: 100vmin;

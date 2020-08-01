@@ -1,13 +1,14 @@
 const texts = require("./textArray");
 const data = require("./data.json");
 const debounce = require("./debounce");
-const threshold = 80;
+const threshold = 50;
 const delay = 600;
 let wheel = -1;
 
 let count = {
   value: 1,
   inc() {
+    console.log("inc", this.value);
     if (this.value + 1 > texts.length - 1) {
       this.value = 0;
     } else {
@@ -15,6 +16,7 @@ let count = {
     }
   },
   dec() {
+    console.log("dec", this.value);
     if (this.value - 1 < 0) {
       this.value = texts.length - 1;
     } else {
@@ -69,9 +71,9 @@ function rotateImg(e) {
   const ampRotateX = 12;
   const ampRotateY = 6;
   const maxSize = 2;
-  const { width } = this.getBoundingClientRect();
+  const { width, height } = this.getBoundingClientRect();
   const percentOffsetX = Math.ceil((e.offsetX / width) * 100) - 50;
-  const percentOffsetY = Math.ceil((e.offsetY / width) * 100) - 50;
+  const percentOffsetY = Math.ceil((e.offsetY / height) * 100) - 50;
   const rotateX = (ampRotateX * percentOffsetX * 2) / 100;
   const rotateY = (ampRotateY * percentOffsetY * 2) / 100;
   this.style.transform = `rotateY(${rotateX}deg) rotateX(${rotateY}deg) translateZ(-40px)`;
@@ -100,9 +102,13 @@ const scrollEvent = new Event("scrollComplete");
 
 handlerScroll = ev => e => {
   //   e.preventDefault();
-  if (ev === "wheel" && !e.target.closest(".app")) {
+  if (
+    ev === "wheel" &&
+    !e.target.closest(".app") &&
+    !e.target.closest(".middle")
+  ) {
+    wheel += Math.sign(e.deltaY);
     // wheel += e.deltaY;
-    wheel++;
     console.log("wheel", wheel);
   }
   console.log(Math.abs(wheel), Math.abs(wheel) > threshold);
@@ -131,35 +137,45 @@ const toggleDescription = () => {
 addEventListener("wheel", handlerScroll("wheel"), opts);
 // addEventListener("scroll", handlerScroll("scroll"), opts);
 // addEventListener("touchmove", handlerScroll("touchmove"), opts);
+const render = x => {
+  const obj = {
+    true: {
+      func: count.dec.bind(count),
+      appClassListAdd: "hiddenUp",
+      appClassListToggle: ["green", "colorLight", "hiddenUp"],
+      refreshImg: "dark",
+    },
+    false: {
+      func: count.inc.bind(count),
+      appClassListAdd: "hiddenDown",
+      appClassListToggle: ["blue", "colorDark", "hiddenDown"],
+      refreshImg: "light",
+    },
+  };
+  obj[x].func();
+  app.classList.add(obj[x].appClassListAdd);
+  setTimeout(() => {
+    app.classList.remove(
+      obj[x].appClassListToggle[0],
+      obj[x].appClassListToggle[1],
+      obj[x].appClassListToggle[2]
+    );
+    app.classList.add(
+      obj[!x].appClassListToggle[0],
+      obj[!x].appClassListToggle[1]
+    );
+
+    appDiv.innerHTML = texts[count.value];
+    refreshImg(obj[x].refreshImg);
+    thumbnailsRefresh(count.value);
+    toggleDescription();
+    app.classList.remove(obj[x].appClassListToggle[2]);
+  }, delay);
+};
+
 const handlerScrollComplete = e => {
   console.log("handlerScrollComplete");
-  if (wheel > 0) {
-    count.dec();
-
-    app.classList.add("hiddenUp");
-    setTimeout(() => {
-      app.classList.remove("green", "colorLight");
-      app.classList.add("blue", "colorDark");
-      appDiv.innerHTML = texts[count.value];
-      refreshImg("dark");
-      thumbnailsRefresh(count.value);
-      toggleDescription();
-      app.classList.remove("hiddenUp");
-    }, delay);
-  } else {
-    count.inc();
-
-    app.classList.add("hiddenDown");
-    setTimeout(() => {
-      app.classList.remove("blue", "colorDark");
-      app.classList.add("green", "colorLight");
-      appDiv.innerHTML = texts[count.value];
-      refreshImg("light");
-      thumbnailsRefresh(count.value);
-      toggleDescription();
-      app.classList.remove("hiddenDown");
-    }, delay);
-  }
+  render(wheel > 0);
 };
 addEventListener("scrollComplete", handlerScrollComplete);
 btns.forEach(btn => {
