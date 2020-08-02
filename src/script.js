@@ -3,11 +3,30 @@ const data = require("./data.json");
 const debounce = require("./debounce");
 const threshold = 50;
 const delay = 600;
-let wheel = -1;
 
 const chCountValue = new Event("chCountValue");
+const valOverflow = new Event("valOverflow");
 
-let count = {
+const wheel = {
+  get wheel() {
+    return this._wheel;
+  },
+  set wheel(x) {
+    if (this._wheel <= threshold) {
+      this._wheel = x;
+    } else {
+      this._wheel = x;
+      dispatchEvent(valOverflow);
+    }
+  },
+  reset() {
+    this._wheel = 0;
+  },
+  get isPositive() {
+    return this._wheel > 0;
+  },
+};
+const count = {
   value: 1,
   inc() {
     if (this.value + 1 > texts.length - 1) {
@@ -36,16 +55,16 @@ const getImg = () => {
 };
 
 const moveFlag = () => {
-  const el = thumbs[count.value];
+  const el = thumbs[count.value].querySelector("img");
   const flag = document.querySelector(".flag");
-  const top = el.getBoundingClientRect().top;
-  const height = el.getBoundingClientRect().height;
-  const moveFlagTo = top + height / 3;
-  flag.style.top = moveFlagTo + "px";
+  const { top, height, left, width } = el.getBoundingClientRect();
+  const moveFlagX = top + height / 3;
+  const moveFlagY = left + width;
+
+  flag.style.top = moveFlagX + "px";
+  flag.style.left = moveFlagY * 0.94 + "px";
   console.log("x", top, height);
 };
-
-addEventListener("chCountValue", moveFlag);
 
 const thumbnails = data.reduce((ac, e, i) => {
   return i === count.value
@@ -54,20 +73,20 @@ const thumbnails = data.reduce((ac, e, i) => {
     : ac + `<div class="thumbnail" data-id=${i}><img src="${e.imgUrl}"/></div>`;
 }, "");
 const middle = document.querySelector(".wrap > .middle");
-middle.innerHTML = `<div class="flag">◀︎</div>` + thumbnails;
+middle.innerHTML = `<div class="flag">🦴</div>` + thumbnails;
 const thumbs = document.querySelectorAll(".wrap > .middle > .thumbnail");
 
 const handleThumbs = e => {
   const id = e.target.closest(".thumbnail").dataset.id;
   if (+id < count.value) {
-    wheel = 51;
+    wheel.wheel = 51;
     count.value = +id + 1;
-    handlerScrollComplete(e);
+    render(wheel.isPositive);
     moveFlag();
   } else {
-    wheel = -51;
+    wheel.wheel = -51;
     count.value = +id - 1;
-    handlerScrollComplete(e);
+    render(wheel.isPositive);
     moveFlag();
   }
 };
@@ -124,24 +143,14 @@ handlerScroll = ev => e => {
     !e.target.closest(".app") &&
     !e.target.closest(".middle")
   ) {
-    wheel += Math.sign(e.deltaY);
+    wheel.wheel += Math.sign(e.deltaY);
     // wheel += e.deltaY;
-    console.log("wheel", wheel);
   }
-  console.log(Math.abs(wheel), Math.abs(wheel) > threshold);
-  if (Math.abs(wheel) > threshold) {
+  if (Math.abs(wheel.wheel) > threshold) {
     dispatchEvent(scrollEvent);
-    wheel = 0;
+    wheel.reset();
   }
 };
-
-let supportsPassive = false;
-let opts = Object.defineProperty({}, "passive", {
-  get: function () {
-    supportsPassive = true;
-    console.log("supportsPassive", supportsPassive);
-  },
-});
 
 const toggleDescription = () => {
   const toggle = document.querySelector(".toggle>button");
@@ -151,9 +160,6 @@ const toggleDescription = () => {
   });
 };
 
-addEventListener("wheel", handlerScroll("wheel"), opts);
-// addEventListener("scroll", handlerScroll("scroll"), opts);
-// addEventListener("touchmove", handlerScroll("touchmove"), opts);
 const render = x => {
   const obj = {
     true: {
@@ -190,28 +196,33 @@ const render = x => {
   }, delay);
 };
 
-const handlerScrollComplete = e => {
-  console.log("handlerScrollComplete");
-  render(wheel > 0);
-};
-addEventListener("scrollComplete", handlerScrollComplete);
 btns.forEach(btn => {
-  btn.addEventListener("click", e => {
+  btn.addEventListener("click", () => {
     if (btn.classList.contains("up")) {
-      wheel = 51;
-      handlerScrollComplete(e);
+      wheel.wheel = 51;
+      render(wheel.isPositive);
     }
     if (btn.classList.contains("down")) {
-      wheel = -51;
-      handlerScrollComplete(e);
+      wheel.wheel = -51;
+      render(wheel.isPositive);
     }
   });
 });
 
-//------  rotate .img  ---------
-
+//------  INIT  ---------
+wheel.wheel = 1;
+let supportsPassive = false;
+let opts = Object.defineProperty({}, "passive", {
+  get: function () {
+    supportsPassive = true;
+  },
+});
+addEventListener("wheel", handlerScroll("wheel"), opts);
+addEventListener("scrollComplete", () => render(wheel.isPositive));
+addEventListener("chCountValue", moveFlag);
+addEventListener("resize", moveFlag);
 refreshImg("dark");
 toggleDescription();
 moveFlag(thumbs[1]);
 
-//------ toggle -------/--------
+//------ INIT -------/--------
