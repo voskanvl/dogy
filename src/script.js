@@ -1,50 +1,13 @@
 const texts = require("./textArray");
 const data = require("./data.json");
 const debounce = require("./debounce");
+const Wheel = require("./wheel");
+const Count = require("./count");
 const threshold = 50;
 const delay = 600;
 
-const chCountValue = new Event("chCountValue");
-const valOverflow = new Event("valOverflow");
-
-const wheel = {
-  get wheel() {
-    return this._wheel;
-  },
-  set wheel(x) {
-    if (this._wheel <= threshold) {
-      this._wheel = x;
-    } else {
-      this._wheel = x;
-      dispatchEvent(valOverflow);
-    }
-  },
-  reset() {
-    this._wheel = 0;
-  },
-  get isPositive() {
-    return this._wheel > 0;
-  },
-};
-const count = {
-  value: 1,
-  inc() {
-    if (this.value + 1 > texts.length - 1) {
-      this.value = 0;
-    } else {
-      this.value++;
-    }
-    dispatchEvent(chCountValue);
-  },
-  dec() {
-    if (this.value - 1 < 0) {
-      this.value = texts.length - 1;
-    } else {
-      this.value--;
-    }
-    dispatchEvent(chCountValue);
-  },
-};
+const wheel = new Wheel();
+const count = new Count(texts.length - 1, "circle");
 
 const app = document.querySelector(".app");
 const appDiv = document.querySelector(".app>div");
@@ -55,6 +18,7 @@ const getImg = () => {
 };
 
 const moveFlag = () => {
+  console.log("moveFlag", count.value);
   const el = thumbs[count.value].querySelector("img");
   const flag = document.querySelector(".flag");
   const { top, height, left, width } = el.getBoundingClientRect();
@@ -63,14 +27,14 @@ const moveFlag = () => {
 
   flag.style.top = moveFlagX + "px";
   flag.style.left = moveFlagY * 0.94 + "px";
-  console.log("x", top, height);
 };
 
 const thumbnails = data.reduce((ac, e, i) => {
   return i === count.value
     ? ac +
         `<div class="thumbnail thumbnail-light" data-id=${i}><img src="${e.imgUrl}"/></div>`
-    : ac + `<div class="thumbnail" data-id=${i}><img src="${e.imgUrl}"/></div>`;
+    : ac +
+        `<div class="thumbnail" data-id=${i}><img src="${e.imgUrl}" alt="${e.alt}"/></div>`;
 }, "");
 const middle = document.querySelector(".wrap > .middle");
 middle.innerHTML = `<div class="flag">🦴</div>` + thumbnails;
@@ -141,7 +105,8 @@ handlerScroll = ev => e => {
   if (
     ev === "wheel" &&
     !e.target.closest(".app") &&
-    !e.target.closest(".middle")
+    !e.target.closest(".middle") &&
+    !e.target.closest(".toggle")
   ) {
     wheel.wheel += Math.sign(e.deltaY);
     // wheel += e.deltaY;
@@ -153,29 +118,30 @@ handlerScroll = ev => e => {
 };
 
 const toggleDescription = () => {
-  const toggle = document.querySelector(".toggle>button");
+  const toggleBtn = document.querySelector(".toggle>button");
   const pToggle = document.querySelector(".toggle>p");
-  toggle.addEventListener("click", () => {
+  toggleBtn.addEventListener("click", () => {
     pToggle.classList.toggle("hidden");
+    // app.classList.
   });
 };
 
 const render = x => {
   const obj = {
     true: {
-      func: count.dec.bind(count),
+      func: count.dec,
       appClassListAdd: "hiddenUp",
       appClassListToggle: ["green", "colorLight", "hiddenUp"],
       refreshImg: "dark",
     },
     false: {
-      func: count.inc.bind(count),
+      func: count.inc,
       appClassListAdd: "hiddenDown",
       appClassListToggle: ["blue", "colorDark", "hiddenDown"],
       refreshImg: "light",
     },
   };
-  obj[x].func();
+  obj[x].func.call(count);
   app.classList.add(obj[x].appClassListAdd);
   setTimeout(() => {
     app.classList.remove(
@@ -201,28 +167,38 @@ btns.forEach(btn => {
     if (btn.classList.contains("up")) {
       wheel.wheel = 51;
       render(wheel.isPositive);
+      moveFlag();
     }
     if (btn.classList.contains("down")) {
       wheel.wheel = -51;
       render(wheel.isPositive);
+      moveFlag();
     }
   });
 });
 
 //------  INIT  ---------
-wheel.wheel = 1;
-let supportsPassive = false;
-let opts = Object.defineProperty({}, "passive", {
-  get: function () {
-    supportsPassive = true;
-  },
+addEventListener("load", () => {
+  wheel.wheel = 1;
+  let supportsPassive = false;
+  let opts = Object.defineProperty({}, "passive", {
+    get: function () {
+      supportsPassive = true;
+    },
+  });
+  addEventListener("wheel", handlerScroll("wheel"), opts);
+  addEventListener("scrollComplete", () => render(wheel.isPositive));
+  addEventListener("chCountValue", moveFlag);
+  thumbs.forEach(thumb => {
+    const img = thumb.querySelector("img");
+    img.addEventListener("load", () => {
+      moveFlag();
+    });
+  });
+  addEventListener("resize", moveFlag);
+  refreshImg("dark");
+  toggleDescription();
+  moveFlag(thumbs[1]);
 });
-addEventListener("wheel", handlerScroll("wheel"), opts);
-addEventListener("scrollComplete", () => render(wheel.isPositive));
-addEventListener("chCountValue", moveFlag);
-addEventListener("resize", moveFlag);
-refreshImg("dark");
-toggleDescription();
-moveFlag(thumbs[1]);
 
 //------ INIT -------/--------
