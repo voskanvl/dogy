@@ -129,15 +129,20 @@ body {
 }
 
 .middle > .flag {
-  position: absolute;
-  font-size: 2vmax;
-  right: -5px;
+  position: fixed;
+  font-size: 3vmax;
+  width: 3vmax;
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+  right: -6px;
   top: 33.33%;
   color: red;
-  text-shadow: -3px 0 16px red;
+  text-shadow: -3px 0 16px black;
   -webkit-transition: 1s;
   transition: 1s;
   z-index: 13;
+  -webkit-animation: rotateFlag 2s infinite ease-in-out;
+          animation: rotateFlag 2s infinite ease-in-out;
 }
 
 .middle .thumbnail {
@@ -288,5 +293,35 @@ img {
 .toggle > p.hidden {
   top: 100%;
   opacity: 0;
+}
+
+@-webkit-keyframes rotateFlag {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  50% {
+    -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+
+@keyframes rotateFlag {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  50% {
+    -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
 }
 /*# sourceMappingURL=style.css.map */

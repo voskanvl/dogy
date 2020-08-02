@@ -99,14 +99,17 @@ body {
   justify-content: space-between;
   overflow: auto;
   & > .flag {
-    position: absolute;
-    font-size: 2vmax;
-    right: -5px;
+    position: fixed;
+    font-size: 3vmax;
+    width: 3vmax;
+    transform: rotate(45deg);
+    right: -6px;
     top: 33.33%;
     color: red;
-    text-shadow: -3px 0 16px red;
+    text-shadow: -3px 0 16px black;
     transition: 1s;
     z-index: 13;
+    animation: rotateFlag 2s infinite ease-in-out;
   }
   .thumbnail {
     position: relative;
@@ -230,5 +233,17 @@ img {
       top: 100%;
       opacity: 0;
     }
+  }
+}
+
+@keyframes rotateFlag {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
