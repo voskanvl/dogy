@@ -76,13 +76,13 @@
           transform: rotate(45deg);
   right: -6px;
   top: 33.33%;
-  color: red;
-  text-shadow: -3px 0 16px black;
+  color: #ddd;
+  text-shadow: -3px 0 16px red;
   -webkit-transition: 1s;
   transition: 1s;
   z-index: 13;
-  -webkit-animation: rotateFlag 2s infinite ease-in-out;
-          animation: rotateFlag 2s infinite ease-in-out;
+  -webkit-animation: scaleFlag 2s infinite ease-in-out;
+          animation: scaleFlag 2s infinite ease-in-out;
 }
 
 .wrap > .middle .thumbnail {
@@ -133,4 +133,33 @@
   height: 100vmin;
   width: 100vmin;
 }
-/*# sourceMappingURL=wrap.css.map */
+
+@-webkit-keyframes scaleFlag {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes scaleFlag {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}

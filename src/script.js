@@ -37,7 +37,7 @@ const thumbnails = data.reduce((ac, e, i) => {
         `<div class="thumbnail" data-id=${i}><img src="${e.imgUrl}" alt="${e.alt}"/></div>`;
 }, "");
 const middle = document.querySelector(".wrap > .middle");
-middle.innerHTML = `<div class="flag">🦴</div>` + thumbnails;
+middle.innerHTML = `<div class="flag">◀</div>` + thumbnails;
 const thumbs = document.querySelectorAll(".wrap > .middle > .thumbnail");
 
 const handleThumbs = e => {
@@ -86,8 +86,8 @@ function rotateImg(e) {
 
 const refresh = theme => {
   const clr = {
-    light: "#ddd",
-    dark: "#222",
+    dark: "#ddd",
+    light: "#222",
   };
   console.log(theme, clr[theme]);
   const img = getImg();
@@ -118,10 +118,12 @@ handlerScroll = ev => e => {
 };
 
 const toggleDescription = () => {
-  const toggleBtn = document.querySelector(".toggle>button");
-  const pToggle = document.querySelector(".toggle>p");
+  const toggleBtn = document.querySelector(".toggle_trigger");
+  const pToggle = document.querySelector(".toggle");
+  const toggleTriggerMark = document.querySelector(".toggle_trigger_mark");
   toggleBtn.addEventListener("click", () => {
     pToggle.classList.toggle("hidden");
+    toggleTriggerMark.classList.toggle("open");
     // app.classList.
   });
 };
@@ -186,7 +188,7 @@ addEventListener("load", () => {
       supportsPassive = true;
     },
   });
-  addEventListener("wheel", handlerScroll("wheel"), opts);
+  // addEventListener("wheel", handlerScroll("wheel"), opts);
   addEventListener("scrollComplete", () => render(wheel.isPositive));
   addEventListener("chCountValue", moveFlag);
   thumbs.forEach(thumb => {

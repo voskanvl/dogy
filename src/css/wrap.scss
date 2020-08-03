@@ -52,11 +52,11 @@
       transform: rotate(45deg);
       right: -6px;
       top: 33.33%;
-      color: red;
-      text-shadow: -3px 0 16px black;
+      // color: #ddd;
+      text-shadow: -3px 0 16px red;
       transition: 1s;
       z-index: 13;
-      animation: rotateFlag 2s infinite ease-in-out;
+      animation: scaleFlag 2s infinite ease-in-out;
     }
     .thumbnail {
       position: relative;
@@ -94,5 +94,16 @@
       height: 100vmin;
       width: 100vmin;
     }
+  }
+}
+@keyframes scaleFlag {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(0);
   }
 }

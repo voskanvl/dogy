@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-@import url("css/wrap/wrap.css");
+@import url("css/wrp/wrp.css");
 @import url("css/app/app.css");
 @import url("css/item/item.css");
 @font-face {
@@ -62,34 +62,3 @@ img {
      object-fit: cover;
   background-color: #eee;
 }
-
-@-webkit-keyframes rotateFlag {
-  0% {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  50% {
-    -webkit-transform: rotate(90deg);
-            transform: rotate(90deg);
-  }
-  100% {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-}
-
-@keyframes rotateFlag {
-  0% {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  50% {
-    -webkit-transform: rotate(90deg);
-            transform: rotate(90deg);
-  }
-  100% {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-}
-/*# sourceMappingURL=style.css.map */
